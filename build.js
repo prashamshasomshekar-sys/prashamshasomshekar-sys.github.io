@@ -18,6 +18,7 @@ const bodyStart = src.indexOf('</style>') + '</style>'.length;
 const bodyEnd = src.search(/<script(?:\s[^>]*)?>/);
 const body = src.slice(bodyStart, bodyEnd).trim();
 
+const ver = require("crypto").createHash("md5").update(css + inlineJs).digest("hex").slice(0, 8);
 const reset = `/* Base reset */
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
@@ -35,12 +36,12 @@ fs.writeFileSync(at('index.html'), `<!doctype html>
   <title>${title}</title>
   <meta name="description" content="Portfolio of Prashamsha S: final-year B.Tech student in AI & Data Science exploring business, design and people. Projects, skills, learning and experience.">
   ${fontLinks}
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=${ver}">
 </head>
 <body>
 ${body}
 
-<script src="script.js"></script>
+<script src="script.js?v=${ver}"></script>
 </body>
 </html>
 `);

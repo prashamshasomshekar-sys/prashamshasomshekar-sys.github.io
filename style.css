@@ -113,7 +113,7 @@ h2 { font: 700 clamp(28px, 4vw, 44px)/1.1 var(--display); margin: 0 0 6px; }
 .rod::before, .rod::after { content: ""; position: absolute; top: -3px; width: 14px; height: 22px; border-radius: 6px; background: linear-gradient(90deg, #f3cf8a, #b8873a); }
 .rod::before { left: -8px; } .rod::after { right: -8px; }
 .mount { padding: 0 12px; background: repeating-linear-gradient(45deg, var(--wine) 0 6px, #6e2238 6px 12px); }
-.paper, .strip-inner, .letter { text-shadow: none; -webkit-font-smoothing: antialiased; }
+.paper, .paper *, .strip-inner, .strip-inner *, .letter, .letter * { text-shadow: none !important; -webkit-font-smoothing: antialiased; }
 .paper { position: relative; overflow: hidden; color: var(--ink); background: radial-gradient(circle at 30% 20%, #fffaf3, #f8ebdd 70%); }
 .paper .wm { position: absolute; right: 10px; top: 14px; font: 800 64px/1 var(--display); color: rgba(181, 26, 43, .14); writing-mode: vertical-rl; pointer-events: none; }
 .kj-head { all: unset; box-sizing: border-box; display: grid; gap: 6px; width: 100%; padding: 22px 20px 16px; cursor: pointer; }
