@@ -189,6 +189,15 @@ h2 { font: 700 clamp(28px, 4vw, 44px)/1.1 var(--display); margin: 0 0 6px; }
 .scrolls .kj, .learn .kj { transform-origin: 50% -30px; }
 .scrolls .kj:hover, .learn .kj:hover { animation: sway 1.1s ease-out; }
 .scrolls .kj:nth-child(even):hover, .learn .kj:nth-child(even):hover { animation-name: sway2; }
+/* Load animation: scrolls drop from their hooks and unroll, one after another */
+.js .hang-wait .kj { opacity: 0; }
+.hang-in .kj:not(.landed) { animation: hangIn 1.15s cubic-bezier(.22, .8, .3, 1) both; animation-delay: calc(var(--i, 0) * .15s); }
+@keyframes hangIn {
+  0% { opacity: 0; transform: translateY(-46px) rotate(-3deg); clip-path: inset(-60px -40px 100% -40px); }
+  30% { opacity: 1; }
+  60% { transform: translateY(5px) rotate(1.2deg); clip-path: inset(-60px -40px -90px -40px); }
+  82% { transform: translateY(-1px) rotate(-.4deg); }
+  100% { opacity: 1; transform: none; clip-path: inset(-60px -40px -90px -40px); } }
 @keyframes sway { 0% { transform: rotate(0); } 25% { transform: rotate(-1.8deg); } 55% { transform: rotate(1deg); } 80% { transform: rotate(-.4deg); } 100% { transform: none; } }
 @keyframes sway2 { 0% { transform: rotate(0); } 25% { transform: rotate(1.8deg); } 55% { transform: rotate(-1deg); } 80% { transform: rotate(.4deg); } 100% { transform: none; } }
 .learn .paper { padding: 24px 20px 26px; min-height: 170px; display: grid; align-content: start; gap: 8px; }
@@ -251,7 +260,7 @@ footer { padding-block: 34px; font-size: 13px; text-shadow: 0 1px 10px rgba(8,10
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal > *, .kj-body, .btn { transition: none; }
-  .kj:hover { animation: none !important; }
+  .kj:hover, .hang-in .kj { animation: none !important; }
   .js .reveal.pending > * { clip-path: inset(-60px); }
 }
 </style>
@@ -1019,6 +1028,26 @@ footer { padding-block: 34px; font-size: 13px; text-shadow: 0 1px 10px rgba(8,10
       setTimeout(() => el.classList.remove('cut'), 1200);
     }), { rootMargin: '0px 0px -18% 0px' });
     els.forEach(el => io.observe(el));
+  }
+
+  /* ======================= Scroll load animation (Works + Currently learning) ======================= */
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.querySelectorAll('.scrolls, .learn').forEach(box => {
+      const kjs = [...box.querySelectorAll('.kj')];
+      kjs.forEach((k, i) => {
+        k.style.setProperty('--i', i);
+        k.addEventListener('animationend', e => { if (e.animationName === 'hangIn') k.classList.add('landed'); });
+      });
+      if (box.getBoundingClientRect().top < innerHeight * .85) return;
+      box.classList.add('hang-wait');
+      const io = new IntersectionObserver(es => {
+        if (!es[0].isIntersecting) return;
+        io.disconnect();
+        box.classList.add('hang-in');
+        box.classList.remove('hang-wait');
+      }, { rootMargin: '0px 0px -20% 0px' });
+      io.observe(box);
+    });
   }
 
   /* ======================= Copy email ======================= */

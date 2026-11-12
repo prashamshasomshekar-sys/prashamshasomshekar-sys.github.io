@@ -498,6 +498,26 @@
     els.forEach(el => io.observe(el));
   }
 
+  /* ======================= Scroll load animation (Works + Currently learning) ======================= */
+  if (!reduce && 'IntersectionObserver' in window) {
+    document.querySelectorAll('.scrolls, .learn').forEach(box => {
+      const kjs = [...box.querySelectorAll('.kj')];
+      kjs.forEach((k, i) => {
+        k.style.setProperty('--i', i);
+        k.addEventListener('animationend', e => { if (e.animationName === 'hangIn') k.classList.add('landed'); });
+      });
+      if (box.getBoundingClientRect().top < innerHeight * .85) return;
+      box.classList.add('hang-wait');
+      const io = new IntersectionObserver(es => {
+        if (!es[0].isIntersecting) return;
+        io.disconnect();
+        box.classList.add('hang-in');
+        box.classList.remove('hang-wait');
+      }, { rootMargin: '0px 0px -20% 0px' });
+      io.observe(box);
+    });
+  }
+
   /* ======================= Copy email ======================= */
   (function () {
     const btn = document.getElementById('copy'), email = document.getElementById('email');
