@@ -1,8 +1,12 @@
-// Splits portfolio.html (the single-file version used for the Claude preview link)
-// into a standard website: index.html + style.css + script.js.
-// Run with:  node build.js
+// Splits a portfolio.html (the single-file version used for Claude preview links)
+// into a standard website: index.html + style.css + script.js, in the same folder.
+// Run with:  node build.js          (the painted version in this folder)
+//            node build.js clean    (the clean version in the "clean" folder)
 const fs = require('fs');
-const src = fs.readFileSync('portfolio.html', 'utf8');
+const path = require('path');
+const dir = process.argv[2] || '.';
+const at = f => path.join(dir, f);
+const src = fs.readFileSync(at('portfolio.html'), 'utf8');
 
 const title = (src.match(/<title>([\s\S]*?)<\/title>/) || [, 'Portfolio'])[1].trim();
 const fontLinks = (src.match(/<link[^>]+>/g) || []).join('\n  ');
@@ -21,15 +25,15 @@ img { max-width: 100%; }
 [hidden] { display: none !important; }
 `;
 
-fs.writeFileSync('style.css', reset + css.trim() + '\n');
-fs.writeFileSync('script.js', inlineJs.trim() + '\n');
-fs.writeFileSync('index.html', `<!doctype html>
+fs.writeFileSync(at('style.css'), reset + css.trim() + '\n');
+fs.writeFileSync(at('script.js'), inlineJs.trim() + '\n');
+fs.writeFileSync(at('index.html'), `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>${title}</title>
-  <meta name="description" content="Portfolio of Prashamsha S: projects, skills, learning and experience, set in a painted Mt Fuji and sakura world.">
+  <meta name="description" content="Portfolio of Prashamsha S: final-year B.Tech student in AI & Data Science exploring business, design and people. Projects, skills, learning and experience.">
   ${fontLinks}
   <link rel="stylesheet" href="style.css">
 </head>
@@ -40,4 +44,4 @@ ${body}
 </body>
 </html>
 `);
-console.log('Built index.html, style.css and script.js');
+console.log('Built index.html, style.css and script.js in ' + path.resolve(dir));
