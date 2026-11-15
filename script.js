@@ -518,6 +518,50 @@
     });
   }
 
+  /* ======================= Animated sakura scroll bar ======================= */
+  (function () {
+    const rail = document.getElementById('rail'); if (!rail) return;
+    document.documentElement.classList.add('rail-on');
+    const fill = rail.querySelector('.fill'), bud = rail.querySelector('.bud');
+    const secs = ['works', 'about', 'skills', 'learning', 'experience', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
+    const dots = secs.map(sec => {
+      const d = document.createElement('i'); d.className = 'dot';
+      const lab = document.createElement('span'); lab.textContent = sec.id.charAt(0).toUpperCase() + sec.id.slice(1); d.appendChild(lab);
+      rail.appendChild(d); return d;
+    });
+    const maxS = () => Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    const place = () => secs.forEach((sec, i) => { dots[i].style.top = Math.min(100, (sec.offsetTop / maxS()) * 100) + '%'; });
+    let shown = progress(), last = -1, moveT, spin = 0, lastY = scrollY;
+    const tick = () => {
+      const p = progress(); shown += (p - shown) * (reduce ? 1 : .22);
+      if (Math.abs(p - shown) < .0004) shown = p;
+      const h = rail.clientHeight;
+      fill.style.transform = 'scaleY(' + shown.toFixed(4) + ')';
+      spin += (scrollY - lastY) * .6; lastY = scrollY;
+      bud.style.transform = 'translateY(' + (shown * h).toFixed(1) + 'px) rotate(' + spin.toFixed(1) + 'deg)';
+      let here = -1;
+      secs.forEach((sec, i) => { const on = scrollY + innerHeight * .45 >= sec.offsetTop; dots[i].classList.toggle('on', on); if (on) here = i; });
+      if (here !== last) {
+        dots.forEach((d, i) => d.classList.toggle('here', i === here));
+        if (here >= 0 && last !== -2) { const d = dots[here]; d.classList.add('flash'); setTimeout(() => d.classList.remove('flash'), 1100); }
+        last = here;
+      }
+      if (shown !== p) requestAnimationFrame(tick); else running = false;
+    };
+    let running = false;
+    const kick = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
+    addEventListener('scroll', () => { rail.classList.add('moving'); clearTimeout(moveT); moveT = setTimeout(() => rail.classList.remove('moving'), 220); kick(); }, { passive: true });
+    addEventListener('resize', () => { place(); kick(); });
+    addEventListener('load', () => { place(); kick(); });
+    place(); last = -2; kick();
+    /* Click or drag the rail to scroll */
+    const go = e => { const r = rail.getBoundingClientRect(); const t = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)); scrollTo({ top: t * maxS(), behavior: 'instant' }); };
+    rail.addEventListener('pointerdown', e => { rail.setPointerCapture(e.pointerId); rail.classList.add('drag'); document.documentElement.style.scrollBehavior = 'auto'; go(e); });
+    rail.addEventListener('pointermove', e => { if (rail.classList.contains('drag')) go(e); });
+    const end = () => { rail.classList.remove('drag'); document.documentElement.style.scrollBehavior = ''; };
+    rail.addEventListener('pointerup', end); rail.addEventListener('pointercancel', end);
+  })();
+
   /* ======================= Copy email ======================= */
   (function () {
     const btn = document.getElementById('copy'), email = document.getElementById('email');

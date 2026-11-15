@@ -256,6 +256,33 @@ footer { padding-block: 34px; font-size: 13px; text-shadow: 0 1px 10px rgba(8,10
 @media (prefers-reduced-motion: reduce) { .thanks .smile { animation: none; } }
 .thanks p { margin: 18px 0 26px; font-size: clamp(16px, 2vw, 19px); text-shadow: 0 2px 14px rgba(21, 30, 47, .8); }
 .thanks .top { color: var(--paper); text-decoration: none; font-size: 14px; letter-spacing: .14em; border-bottom: 1px solid var(--peach); text-shadow: 0 2px 10px rgba(21, 30, 47, .8); }
+
+/* Animated sakura scroll bar: a branch-like rail with a spinning blossom thumb */
+html.rail-on { scrollbar-width: none; }
+html.rail-on::-webkit-scrollbar { width: 0; height: 0; }
+#rail { position: fixed; z-index: 7; right: 12px; top: 88px; bottom: 36px; width: 34px; display: none; touch-action: none; cursor: pointer; }
+.rail-on #rail { display: block; }
+#rail .track { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; border-radius: 3px; background: rgba(255, 243, 236, .22); box-shadow: 0 0 0 1px rgba(21, 30, 47, .25); overflow: hidden; }
+#rail .fill { position: absolute; left: 0; right: 0; top: 0; height: 100%; transform-origin: top; transform: scaleY(0);
+  background: linear-gradient(#ffd9c9, var(--peach) 30%, var(--crimson) 65%, var(--sakura)); background-size: 100% 200%;
+  animation: railflow 3s linear infinite; box-shadow: 0 0 10px rgba(255, 165, 134, .8); }
+@keyframes railflow { to { background-position: 0 -200%; } }
+#rail .dot { position: absolute; left: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; border: 1.5px solid rgba(255, 243, 236, .7);
+  background: var(--ink); transition: background .35s, border-color .35s, transform .35s cubic-bezier(.3, 1.6, .5, 1), box-shadow .35s; }
+#rail .dot.on { background: var(--peach); border-color: #fff; box-shadow: 0 0 10px var(--peach); }
+#rail .dot.here { transform: scale(1.45); }
+#rail .dot span { position: absolute; right: 18px; top: 50%; transform: translate(6px, -50%); opacity: 0; pointer-events: none; white-space: nowrap;
+  font: 700 12px/1 var(--body); letter-spacing: .08em; color: var(--paper); padding: 6px 10px; border-radius: 999px; background: rgba(21, 30, 47, .85); transition: opacity .25s, transform .25s; }
+#rail:hover .dot span, #rail .dot.here.flash span { opacity: 1; transform: translate(0, -50%); }
+#rail .bud { position: absolute; left: 50%; top: 0; width: 32px; height: 32px; margin: -16px 0 0 -16px; pointer-events: none; will-change: transform;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, .9)) drop-shadow(0 0 10px rgba(255, 165, 134, .8)); }
+#rail .bud svg { display: block; width: 100%; height: 100%; animation: budpulse 2.4s ease-in-out infinite; }
+#rail.moving .bud { filter: drop-shadow(0 0 12px #fff) drop-shadow(0 0 18px rgba(255, 165, 134, .9)); }
+#rail.drag .bud svg, #rail:hover .bud svg { animation-duration: 1.2s; }
+@keyframes budpulse { 0%, 100% { scale: 1; } 50% { scale: 1.15; } }
+@media (max-width: 760px) { #rail { right: 1px; width: 14px; } #rail .bud { width: 20px; height: 20px; margin: -10px 0 0 -10px; } #rail .dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; } #rail .dot span { display: none; } }
+@media (pointer: coarse) { #rail { pointer-events: none; touch-action: auto; } }
+@media (prefers-reduced-motion: reduce) { #rail .fill, #rail .bud svg { animation: none; } }
 @media (max-width: 760px) {
   nav li.hide-sm { display: none; } nav ul { gap: 16px; }
   .hero { grid-template-columns: 1fr; padding-block: 24px 40px; }
@@ -274,6 +301,10 @@ footer { padding-block: 34px; font-size: 13px; text-shadow: 0 1px 10px rgba(8,10
 
 <canvas id="world" aria-hidden="true"></canvas>
 <canvas id="fx" aria-hidden="true"></canvas>
+<div id="rail" aria-hidden="true">
+  <div class="track"><i class="fill"></i></div>
+  <div class="bud"><svg viewBox="-12 -12 24 24"><circle r="11.5" fill="rgba(21,30,47,.55)"/><g fill="#fff0f3" stroke="#B51A2B" stroke-width=".9"><path transform="rotate(0)" d="M0 0C-4.5-3-4.5-8.5-1.6-10.5L0-9 1.6-10.5C4.5-8.5 4.5-3 0 0Z"/><path transform="rotate(72)" d="M0 0C-4.5-3-4.5-8.5-1.6-10.5L0-9 1.6-10.5C4.5-8.5 4.5-3 0 0Z"/><path transform="rotate(144)" d="M0 0C-4.5-3-4.5-8.5-1.6-10.5L0-9 1.6-10.5C4.5-8.5 4.5-3 0 0Z"/><path transform="rotate(216)" d="M0 0C-4.5-3-4.5-8.5-1.6-10.5L0-9 1.6-10.5C4.5-8.5 4.5-3 0 0Z"/><path transform="rotate(288)" d="M0 0C-4.5-3-4.5-8.5-1.6-10.5L0-9 1.6-10.5C4.5-8.5 4.5-3 0 0Z"/></g><circle r="2.4" fill="#fff3ec"/><circle r="1.1" fill="#B51A2B"/></svg></div>
+</div>
 <div id="kcur" aria-hidden="true">
   <svg viewBox="0 0 30 30" width="30" height="30">
     <defs><radialGradient id="pcG" cx=".4" cy=".75" r=".8"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#ffd6de"/><stop offset="1" stop-color="#ef93a8"/></radialGradient></defs>
@@ -1056,6 +1087,50 @@ footer { padding-block: 34px; font-size: 13px; text-shadow: 0 1px 10px rgba(8,10
       io.observe(box);
     });
   }
+
+  /* ======================= Animated sakura scroll bar ======================= */
+  (function () {
+    const rail = document.getElementById('rail'); if (!rail) return;
+    document.documentElement.classList.add('rail-on');
+    const fill = rail.querySelector('.fill'), bud = rail.querySelector('.bud');
+    const secs = ['works', 'about', 'skills', 'learning', 'experience', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
+    const dots = secs.map(sec => {
+      const d = document.createElement('i'); d.className = 'dot';
+      const lab = document.createElement('span'); lab.textContent = sec.id.charAt(0).toUpperCase() + sec.id.slice(1); d.appendChild(lab);
+      rail.appendChild(d); return d;
+    });
+    const maxS = () => Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    const place = () => secs.forEach((sec, i) => { dots[i].style.top = Math.min(100, (sec.offsetTop / maxS()) * 100) + '%'; });
+    let shown = progress(), last = -1, moveT, spin = 0, lastY = scrollY;
+    const tick = () => {
+      const p = progress(); shown += (p - shown) * (reduce ? 1 : .22);
+      if (Math.abs(p - shown) < .0004) shown = p;
+      const h = rail.clientHeight;
+      fill.style.transform = 'scaleY(' + shown.toFixed(4) + ')';
+      spin += (scrollY - lastY) * .6; lastY = scrollY;
+      bud.style.transform = 'translateY(' + (shown * h).toFixed(1) + 'px) rotate(' + spin.toFixed(1) + 'deg)';
+      let here = -1;
+      secs.forEach((sec, i) => { const on = scrollY + innerHeight * .45 >= sec.offsetTop; dots[i].classList.toggle('on', on); if (on) here = i; });
+      if (here !== last) {
+        dots.forEach((d, i) => d.classList.toggle('here', i === here));
+        if (here >= 0 && last !== -2) { const d = dots[here]; d.classList.add('flash'); setTimeout(() => d.classList.remove('flash'), 1100); }
+        last = here;
+      }
+      if (shown !== p) requestAnimationFrame(tick); else running = false;
+    };
+    let running = false;
+    const kick = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
+    addEventListener('scroll', () => { rail.classList.add('moving'); clearTimeout(moveT); moveT = setTimeout(() => rail.classList.remove('moving'), 220); kick(); }, { passive: true });
+    addEventListener('resize', () => { place(); kick(); });
+    addEventListener('load', () => { place(); kick(); });
+    place(); last = -2; kick();
+    /* Click or drag the rail to scroll */
+    const go = e => { const r = rail.getBoundingClientRect(); const t = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)); scrollTo({ top: t * maxS(), behavior: 'instant' }); };
+    rail.addEventListener('pointerdown', e => { rail.setPointerCapture(e.pointerId); rail.classList.add('drag'); document.documentElement.style.scrollBehavior = 'auto'; go(e); });
+    rail.addEventListener('pointermove', e => { if (rail.classList.contains('drag')) go(e); });
+    const end = () => { rail.classList.remove('drag'); document.documentElement.style.scrollBehavior = ''; };
+    rail.addEventListener('pointerup', end); rail.addEventListener('pointercancel', end);
+  })();
 
   /* ======================= Copy email ======================= */
   (function () {

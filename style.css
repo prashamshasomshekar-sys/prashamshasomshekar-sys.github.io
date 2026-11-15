@@ -256,6 +256,33 @@ footer { padding-block: 34px; font-size: 13px; text-shadow: 0 1px 10px rgba(8,10
 @media (prefers-reduced-motion: reduce) { .thanks .smile { animation: none; } }
 .thanks p { margin: 18px 0 26px; font-size: clamp(16px, 2vw, 19px); text-shadow: 0 2px 14px rgba(21, 30, 47, .8); }
 .thanks .top { color: var(--paper); text-decoration: none; font-size: 14px; letter-spacing: .14em; border-bottom: 1px solid var(--peach); text-shadow: 0 2px 10px rgba(21, 30, 47, .8); }
+
+/* Animated sakura scroll bar: a branch-like rail with a spinning blossom thumb */
+html.rail-on { scrollbar-width: none; }
+html.rail-on::-webkit-scrollbar { width: 0; height: 0; }
+#rail { position: fixed; z-index: 7; right: 12px; top: 88px; bottom: 36px; width: 34px; display: none; touch-action: none; cursor: pointer; }
+.rail-on #rail { display: block; }
+#rail .track { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; border-radius: 3px; background: rgba(255, 243, 236, .22); box-shadow: 0 0 0 1px rgba(21, 30, 47, .25); overflow: hidden; }
+#rail .fill { position: absolute; left: 0; right: 0; top: 0; height: 100%; transform-origin: top; transform: scaleY(0);
+  background: linear-gradient(#ffd9c9, var(--peach) 30%, var(--crimson) 65%, var(--sakura)); background-size: 100% 200%;
+  animation: railflow 3s linear infinite; box-shadow: 0 0 10px rgba(255, 165, 134, .8); }
+@keyframes railflow { to { background-position: 0 -200%; } }
+#rail .dot { position: absolute; left: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; border: 1.5px solid rgba(255, 243, 236, .7);
+  background: var(--ink); transition: background .35s, border-color .35s, transform .35s cubic-bezier(.3, 1.6, .5, 1), box-shadow .35s; }
+#rail .dot.on { background: var(--peach); border-color: #fff; box-shadow: 0 0 10px var(--peach); }
+#rail .dot.here { transform: scale(1.45); }
+#rail .dot span { position: absolute; right: 18px; top: 50%; transform: translate(6px, -50%); opacity: 0; pointer-events: none; white-space: nowrap;
+  font: 700 12px/1 var(--body); letter-spacing: .08em; color: var(--paper); padding: 6px 10px; border-radius: 999px; background: rgba(21, 30, 47, .85); transition: opacity .25s, transform .25s; }
+#rail:hover .dot span, #rail .dot.here.flash span { opacity: 1; transform: translate(0, -50%); }
+#rail .bud { position: absolute; left: 50%; top: 0; width: 32px; height: 32px; margin: -16px 0 0 -16px; pointer-events: none; will-change: transform;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, .9)) drop-shadow(0 0 10px rgba(255, 165, 134, .8)); }
+#rail .bud svg { display: block; width: 100%; height: 100%; animation: budpulse 2.4s ease-in-out infinite; }
+#rail.moving .bud { filter: drop-shadow(0 0 12px #fff) drop-shadow(0 0 18px rgba(255, 165, 134, .9)); }
+#rail.drag .bud svg, #rail:hover .bud svg { animation-duration: 1.2s; }
+@keyframes budpulse { 0%, 100% { scale: 1; } 50% { scale: 1.15; } }
+@media (max-width: 760px) { #rail { right: 1px; width: 14px; } #rail .bud { width: 20px; height: 20px; margin: -10px 0 0 -10px; } #rail .dot { width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; } #rail .dot span { display: none; } }
+@media (pointer: coarse) { #rail { pointer-events: none; touch-action: auto; } }
+@media (prefers-reduced-motion: reduce) { #rail .fill, #rail .bud svg { animation: none; } }
 @media (max-width: 760px) {
   nav li.hide-sm { display: none; } nav ul { gap: 16px; }
   .hero { grid-template-columns: 1fr; padding-block: 24px 40px; }
