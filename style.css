@@ -121,7 +121,7 @@ h2 { font: 700 clamp(28px, 4vw, 44px)/1.1 var(--display); margin: 0 0 6px; }
 .kj .kind { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--crimson); font-variant-numeric: tabular-nums; }
 .kj h3 { font: 800 22px/1.25 var(--display); margin: 0; padding-right: 40px; }
 .kj .toggle { font-size: 13px; color: var(--slate); font-weight: 700; }
-.kj-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .7s cubic-bezier(.3, .7, .2, 1); }
+.kj-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 1.5s cubic-bezier(.45, .05, .25, 1); }
 .kj.open .kj-body { grid-template-rows: 1fr; }
 .kj-body > div { overflow: hidden; }
 .kj-body .in { padding: 0 20px 22px; }
@@ -191,7 +191,7 @@ h2 { font: 700 clamp(28px, 4vw, 44px)/1.1 var(--display); margin: 0 0 6px; }
 .scrolls .kj:nth-child(even):hover, .learn .kj:nth-child(even):hover { animation-name: sway2; }
 /* Load animation: scrolls drop from their hooks and unroll, one after another */
 .js .hang-wait .kj { opacity: 0; }
-.hang-in .kj:not(.landed) { animation: hangIn 1.15s cubic-bezier(.22, .8, .3, 1) both; animation-delay: calc(var(--i, 0) * .15s); }
+.hang-in .kj:not(.landed) { animation: hangIn 2.2s cubic-bezier(.3, .6, .3, 1) both; animation-delay: calc(var(--i, 0) * .28s); }
 @keyframes hangIn {
   0% { opacity: 0; transform: translateY(-46px) rotate(-3deg); clip-path: inset(-60px -40px 100% -40px); }
   30% { opacity: 1; }
