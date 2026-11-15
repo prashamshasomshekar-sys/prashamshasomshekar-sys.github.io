@@ -570,7 +570,7 @@ html.rail-on::-webkit-scrollbar { width: 0; height: 0; }
 <script>
 (function () {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches || matchMedia('(any-hover: hover) and (any-pointer: fine)').matches;
   const small = innerWidth < 760 || !fine;
   document.documentElement.classList.add('js');
   const progress = () => { const m = document.documentElement.scrollHeight - innerHeight; return m > 0 ? Math.min(1, Math.max(0, scrollY / m)) : 0; };
@@ -955,9 +955,14 @@ html.rail-on::-webkit-scrollbar { width: 0; height: 0; }
   const dust = [], shines = [], burst = [];
   const kcur = document.getElementById('kcur');
   let lastPX = -99, lastPY = -99;
-  if (fine) {
-    document.documentElement.classList.add('kc');
+  const kc = () => document.documentElement.classList.contains('kc');
+  if (fine) document.documentElement.classList.add('kc');
+  {
+    /* Turn the petal cursor on whenever a real mouse or trackpad moves (also on touchscreen laptops), off for touch */
+    addEventListener('pointerdown', e => { if (e.pointerType === 'touch') document.documentElement.classList.remove('kc'); }, { passive: true });
     addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      if (!kc()) document.documentElement.classList.add('kc');
       kcur.style.transform = `translate(${e.clientX - 15}px, ${e.clientY - 15}px)`;
       if (!reduce && Math.hypot(e.clientX - lastPX, e.clientY - lastPY) > 7) {
         dust.push({ x: e.clientX + (Math.random() - .5) * 10, y: e.clientY + (Math.random() - .5) * 10, vx: (Math.random() - .5) * 20, vy: 12 + Math.random() * 26, life: 0, max: .55 + Math.random() * .5, r: 1 + Math.random() * 1.6, star: Math.random() < .25 });
@@ -967,7 +972,7 @@ html.rail-on::-webkit-scrollbar { width: 0; height: 0; }
     document.addEventListener('pointerover', e => kcur.classList.toggle('hot', !!e.target.closest('a,button,.kj-head')));
     document.addEventListener('pointerleave', () => { kcur.style.transform = 'translate(-99px,-99px)'; });
   }
-  function shineCursor() { if (!fine) return; kcur.classList.remove('shine'); void kcur.offsetWidth; kcur.classList.add('shine'); }
+  function shineCursor() { if (!kc()) return; kcur.classList.remove('shine'); void kcur.offsetWidth; kcur.classList.add('shine'); }
   function shineAt(x, y) {
     if (reduce) return;
     shines.push({ x, y, t: performance.now(), rot: Math.random() * 6.28 });
