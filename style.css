@@ -192,6 +192,13 @@ h2 { font: 700 clamp(28px, 4vw, 44px)/1.1 var(--display); margin: 0 0 6px; }
 /* Load animation: scrolls drop from their hooks and unroll, one after another */
 .js .hang-wait .kj { opacity: 0; }
 .hang-in .kj:not(.landed) { animation: hangIn 2.2s cubic-bezier(.3, .6, .3, 1) both; animation-delay: calc(var(--i, 0) * .28s); }
+.learn.hang-in .kj:not(.landed) { animation: hangRoll 3.4s both; animation-delay: calc(var(--i, 0) * .35s); }
+@keyframes hangRoll {
+  0% { opacity: 0; transform: translateY(-40px); clip-path: inset(-60px -40px calc(100% - 22px) -40px); animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+  18% { opacity: 1; transform: translateY(0); clip-path: inset(-60px -40px calc(100% - 22px) -40px); animation-timing-function: cubic-bezier(.45, .05, .35, 1); }
+  85% { transform: rotate(.6deg); clip-path: inset(-60px -40px -90px -40px); }
+  93% { transform: rotate(-.3deg); }
+  100% { opacity: 1; transform: none; clip-path: inset(-60px -40px -90px -40px); } }
 @keyframes hangIn {
   0% { opacity: 0; transform: translateY(-46px) rotate(-3deg); clip-path: inset(-60px -40px 100% -40px); }
   30% { opacity: 1; }

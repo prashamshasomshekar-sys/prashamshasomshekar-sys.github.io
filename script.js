@@ -504,7 +504,7 @@
       const kjs = [...box.querySelectorAll('.kj')];
       kjs.forEach((k, i) => {
         k.style.setProperty('--i', i);
-        k.addEventListener('animationend', e => { if (e.animationName === 'hangIn') k.classList.add('landed'); });
+        k.addEventListener('animationend', e => { if (e.animationName.startsWith('hang')) k.classList.add('landed'); });
       });
       if (box.getBoundingClientRect().top < innerHeight * .85) return;
       box.classList.add('hang-wait');
